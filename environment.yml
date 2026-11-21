@@ -1,0 +1,17 @@
+name: csc17104-final-project
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - jupyterlab
+  - ipykernel
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - requests
+  - openpyxl
+  - pyarrow
