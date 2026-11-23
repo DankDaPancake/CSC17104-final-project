@@ -15,7 +15,9 @@
 - [x] Tạo cấu trúc thư mục: `docs/`, `notebooks/`, `data/raw/`, `data/processed/`
 - [x] Tạo các tệp nền tảng: `README.md`, `.gitignore`, `environment.yml`, `LLM_USAGE.md`
 - [x] Tạo notebook khung `notebooks/01_collection_exploration.ipynb`
-- [ ] Tạo repo trên GitHub, push commit đầu tiên và mời 2 thành viên còn lại
+- [x] Tạo repo trên GitHub, push commit đầu tiên và mời 2 thành viên còn lại
+
+> **Cập nhật bàn giao (23/11):** Các đầu việc còn lại từ Ngày 2 đến Ngày 4 (kiểm tra giấy phép VietJobs, gửi giảng viên duyệt / phương án dự phòng, cập nhật `README.md` và hoàn thiện bước đọc dữ liệu trong notebook đầu tiên) đã được bàn giao cho **Tiến**. Chi tiết xem tại [HANDOVER_TIEN.md](HANDOVER_TIEN.md).
 
 **Kết quả cần có:** Cả nhóm có quyền truy cập repo, có hướng dẫn tạo môi trường Conda và quy tắc bỏ qua tệp dữ liệu lớn.
 
