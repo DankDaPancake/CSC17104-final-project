@@ -15,6 +15,7 @@ CLEAN_PATH = Path(__file__).resolve().parents[1] / "data" / "processed" / "vietj
 RAW_PATH = Path(__file__).resolve().parents[1] / "data" / "raw" / "VietJobs.csv"
 
 SALARY_OUTLIER_THRESHOLD = 200  # triệu VND/tháng
+SALARY_MIN_VALID = 1  # < 1 triệu/tháng coi là ngoại lai (lương giờ/ngày hoặc lỗi)
 RARE_CONTRACT_MIN = 100
 EXPERIENCE_LEVELS = ["Không yêu cầu", "Dưới 1 năm", "1-2 năm", "3-5 năm", "Trên 5 năm", "Không rõ"]
 REGIONS = ["Hà Nội", "TP.HCM", "Khác"]
@@ -98,3 +99,43 @@ def parse_list(s) -> list[str]:
         items = text.strip("[]").split(",")
         items = [i.strip().strip("'\"") for i in items]
     return [str(i).strip() for i in items if str(i).strip()]
+
+
+def clean(raw: pd.DataFrame) -> pd.DataFrame:
+    """Pipeline làm sạch đầy đủ: lọc Việt Nam, bỏ trùng, thêm cột đã chuẩn hoá."""
+    df = raw[raw["country"] == "Việt Nam"].copy()
+    df = df.drop_duplicates(subset=["job_title", "location", "description"]).reset_index(drop=True)
+
+    df["salary_avg_num"] = df["salary_avg"].map(parse_salary_avg)
+    df["salary_negotiable"] = df["salary_avg_num"].isna()
+    df["salary_outlier"] = (df["salary_avg_num"] > SALARY_OUTLIER_THRESHOLD) | (
+        df["salary_avg_num"] < SALARY_MIN_VALID
+    )
+
+    df["experience_months"] = df["experience_required"].map(parse_experience_months)
+    df["experience_level"] = pd.Categorical(
+        df["experience_months"].map(experience_level), categories=EXPERIENCE_LEVELS, ordered=True
+    )
+
+    loc = df["location"].map(normalize_location)
+    df["location_primary"] = loc.map(lambda t: t[0])
+    df["multi_location"] = loc.map(lambda t: t[1])
+    df["region"] = pd.Categorical(df["location_primary"].map(to_region), categories=REGIONS)
+
+    counts = df["contract_type"].value_counts()
+    common = set(counts[counts >= RARE_CONTRACT_MIN].index)
+    df["contract_group"] = df["contract_type"].where(df["contract_type"].isin(common), "Khác")
+
+    for col in ["technical_skills", "soft_skills", "benefits", "qualifications"]:
+        df[f"{col}_list"] = df[col].map(parse_list)
+    df["n_benefits"] = df["benefits_list"].map(len)
+    df["n_technical_skills"] = df["technical_skills_list"].map(len)
+    return df
+
+
+def load_clean(path: Path = CLEAN_PATH) -> pd.DataFrame:
+    """Đọc dữ liệu sạch (tạo bởi notebooks/02_cleaning.ipynb)."""
+    df = pd.read_parquet(path)
+    for col in ["technical_skills_list", "soft_skills_list", "benefits_list", "qualifications_list"]:
+        df[col] = df[col].map(list)
+    return df
