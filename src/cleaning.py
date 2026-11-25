@@ -139,3 +139,23 @@ def load_clean(path: Path = CLEAN_PATH) -> pd.DataFrame:
     for col in ["technical_skills_list", "soft_skills_list", "benefits_list", "qualifications_list"]:
         df[col] = df[col].map(list)
     return df
+
+
+CATEGORY_LABELS = {
+    "kinh_doanh_bán_hàng_chăm_sóc_khách_hàng": "Kinh doanh/CSKH",
+    "sản_xuất_lao_động_phổ_thông_cơ_khí": "Sản xuất/Cơ khí",
+    "marketing_truyền_thông_quảng_cáo_nội_dung": "Marketing/Truyền thông",
+    "tài_chính_kế_toán_ngân_hàng_bảo_hiểm": "Tài chính/Kế toán",
+    "du_lịch_nhà_hàng_khách_sạn_dịch_vụ": "Du lịch/Nhà hàng",
+    "thiết_kế_nghệ_thuật_giải_trí_truyền_hình_báo_chí": "Thiết kế/Nghệ thuật",
+    "nhân_sự_hành_chính_pháp_chế_tư_vấn": "Nhân sự/Hành chính",
+    "xây_dựng_kiến_trúc_bất_động_sản": "Xây dựng/BĐS",
+    "công_nghệ_thông_tin_kỹ_thuật_số": "CNTT",
+    "logistics_vận_tải_chuỗi_cung_ứng": "Logistics",
+    "kỹ_thuật_điện_điện_tử_viễn_thông": "Điện/Điện tử",
+    "giáo_dục_đào_tạo_nghiên_cứu": "Giáo dục",
+    "y_tế_dược_chăm_sóc_sức_khỏe_công_nghệ_sinh_học": "Y tế/Dược",
+    "ngôn_ngữ_dịch_thuật": "Ngôn ngữ/Dịch thuật",
+    "nhóm_nghề_khác": "Khác",
+    "nông_nghiệp_năng_lượng_môi_trường": "Nông nghiệp/Môi trường",
+}

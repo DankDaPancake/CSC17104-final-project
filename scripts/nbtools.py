@@ -12,12 +12,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from src.cleaning import load_clean, EXPERIENCE_LEVELS, REGIONS
+from src.cleaning import load_clean, EXPERIENCE_LEVELS, REGIONS, CATEGORY_LABELS
 
 sns.set_theme(style="whitegrid")
 pd.set_option("display.max_colwidth", 80)
 FIG_DIR = Path("../reports/figures")
 FIG_DIR.mkdir(parents=True, exist_ok=True)
+
+df = load_clean()
+df["cat"] = df["category"].map(CATEGORY_LABELS)
+# Tập có lương hợp lệ: bỏ "Thoả thuận" và ngoại lai
+sal = df[~df["salary_negotiable"] & ~df["salary_outlier"]].copy()
+print(f"Tất cả tin: {len(df):,} | Tin có lương hợp lệ: {len(sal):,}")
 
 def savefig(name):
     plt.tight_layout()
