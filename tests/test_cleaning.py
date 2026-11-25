@@ -80,8 +80,8 @@ def test_clean_pipeline():
         _raw_row(country="Lào", description="a"),
         _raw_row(description="dup"),
         _raw_row(description="dup"),
-        _raw_row(description="outlier", salary_avg="300 triệu", salary_min=200, salary_max=400),
-        _raw_row(description="min0", salary_min=0, salary_avg="10 triệu", location="hà đông"),
+        _raw_row(description="outlier", salary="200.0 - 400.0 triệu", salary_avg="300 triệu", salary_min=200, salary_max=400),
+        _raw_row(description="min0", salary="0.5 - 19.5 triệu", salary_min=0, salary_avg="10 triệu", location="hà đông"),
         _raw_row(description="neg", salary_min=0, salary_max=0, salary_avg="Thoả thuận",
                  benefits=np.nan, location="hồ chí minh, hà nội"),
     ])
@@ -106,7 +106,7 @@ def test_clean_flags_near_zero_salary_as_outlier():
     import pandas as pd
     from src.cleaning import clean
 
-    out = clean(pd.DataFrame([_raw_row(salary="0.3 - 1.0 triệu", salary_min=0, salary_avg="0 triệu")]))
+    out = clean(pd.DataFrame([_raw_row(salary="0.3 - 1.0 triệu", salary_min=0, salary_max=1, salary_avg="0 triệu")]))
     row = out.iloc[0]
     assert not row.salary_negotiable
     assert row.salary_outlier
@@ -131,3 +131,37 @@ def test_location_separators_flag_multi():
 def test_parse_list_never_raises():
     for bad in ["{[1]}", "{['a']}", "[" * 500]:
         assert isinstance(parse_list(bad), list)
+
+
+def test_salary_midpoint_from_range_string():
+    from src.cleaning import parse_salary_midpoint
+    assert parse_salary_midpoint("8.5 - 9.0 triệu") == 8.75
+    assert parse_salary_midpoint("14.0 triệu") == 14.0
+    assert np.isnan(parse_salary_midpoint("0.0 triệu"))
+    assert np.isnan(parse_salary_midpoint(np.nan))
+
+
+def test_clean_uses_true_midpoint():
+    import pandas as pd
+    from src.cleaning import clean
+    out = clean(pd.DataFrame([_raw_row(salary="8.5 - 9.0 triệu", salary_min=8, salary_max=9, salary_avg="8 triệu")]))
+    assert out.iloc[0].salary_avg_num == 8.75
+
+
+def test_category_other_label_distinct_from_region_other():
+    from src.cleaning import CATEGORY_LABELS
+    assert CATEGORY_LABELS["nhóm_nghề_khác"] == "Nghề khác"
+
+
+def test_midpoint_with_zero_bound_uses_nonzero_bound():
+    from src.cleaning import parse_salary_midpoint
+    assert parse_salary_midpoint("0.0 - 20.0 triệu") == 20.0
+    assert parse_salary_midpoint("8.0 - 0.0 triệu") == 8.0
+
+
+def test_numeric_avg_but_unparseable_range_is_not_kept_as_valid():
+    import pandas as pd
+    from src.cleaning import clean
+    out = clean(pd.DataFrame([_raw_row(salary="0.0 triệu", salary_min=0, salary_max=0, salary_avg="12 triệu")]))
+    row = out.iloc[0]
+    assert row.salary_negotiable or row.salary_outlier

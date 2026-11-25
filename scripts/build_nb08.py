@@ -16,25 +16,28 @@ và văn bản (tên công việc + yêu cầu, TF-IDF 1–2 gram). **Không** d
 `tests/test_modeling.py::test_prepare_xy_no_leakage`).
 
 **Mô hình:** baseline (trung vị) · Ridge (one-hot + TF-IDF) · HistGradientBoosting (TF-IDF → SVD 100 chiều).
-**Đánh giá:** chia train/test 80/20 (`random_state=42`) trước mọi fit; chọn `alpha` của Ridge bằng 5-fold CV trên train;
+**Đánh giá:** chia train/test 80/20 **theo nhóm văn bản** (tin đăng lại có văn bản giống hệt nằm cùng một phía) trước mọi fit; chọn `alpha` của Ridge bằng 5-fold GroupKFold trên train;
 MAE/RMSE/R² trên test, đo bằng triệu VND.
 """),
 ("code", SETUP),
 ("code", """
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV
 from sklearn.inspection import permutation_importance
-from src.modeling import prepare_xy, make_models, evaluate, RANDOM_STATE, CAT_COLS, NUM_COLS, TEXT_COL
+from src.modeling import prepare_xy, make_models, evaluate, group_train_test_split, RANDOM_STATE, CAT_COLS, NUM_COLS, TEXT_COL
 
 X, y = prepare_xy(df)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=RANDOM_STATE)
+X_train, X_test, y_train, y_test = group_train_test_split(X, y, test_size=0.2)
 print(f"Train: {len(X_train):,} | Test: {len(X_test):,}")
+shared = set(X_train[TEXT_COL].str.lower().str.strip()) & set(X_test[TEXT_COL].str.lower().str.strip())
+print("Số văn bản trùng giữa train và test:", len(shared))
 """),
 ("md", "## 1. Chọn siêu tham số Ridge (5-fold CV trên train)"),
 ("code", """
 models = make_models()
-grid = GridSearchCV(models["ridge"], {"regressor__alpha": [0.3, 1, 3, 10]}, cv=5,
+from sklearn.model_selection import GroupKFold
+grid = GridSearchCV(models["ridge"], {"regressor__alpha": [0.3, 1, 3, 10]}, cv=GroupKFold(5),
                     scoring="neg_mean_absolute_error", n_jobs=-1)
-grid.fit(X_train, y_train)
+grid.fit(X_train, y_train, groups=X_train[TEXT_COL].str.lower().str.strip())
 cv = pd.DataFrame(grid.cv_results_)[["param_regressor__alpha", "mean_test_score", "std_test_score"]]
 cv["MAE (log)"] = -cv.pop("mean_test_score")
 display(cv.round(4))
@@ -52,7 +55,13 @@ ax.set(ylabel="MAE (triệu VND)", xlabel="", title="Sai số tuyệt đối tru
 ax.tick_params(axis="x", rotation=0)
 savefig("q6_model_comparison.png")
 """),
-("md", "## 3. Giải thích mô hình Ridge — hệ số lớn nhất"),
+("md", """## 3. Giải thích mô hình Ridge — hệ số lớn nhất
+
+*Lưu ý:* một số tin ghi mức lương ngay trong tên/yêu cầu (vd. "Thu nhập upto 20 triệu"). Đó là nội dung thật của tin (ứng viên cũng đọc được), không phải rò rỉ từ cột lương — nhưng giải thích vì sao token như "thu nhập" có hệ số lớn."""),
+("code", r"""
+mention = X[TEXT_COL].str.contains(r"\d+\s*(?:triệu|tr\b)", case=False, regex=True)
+print(f"Tin có nhắc số tiền trong văn bản: {mention.sum():,} ({mention.mean():.1%})")
+"""),
 ("code", """
 ridge = models["ridge"]
 names = ridge.named_steps["pre"].get_feature_names_out()

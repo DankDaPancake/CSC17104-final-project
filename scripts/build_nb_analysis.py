@@ -65,7 +65,8 @@ gap.to_frame("Chênh lệch Hà Nội − tỉnh khác (triệu)").round(1)
 ("code", """
 med = sal.groupby("region", observed=True)["salary_avg_num"].median()
 print(f"- Trung vị lương: Hà Nội {med['Hà Nội']:.1f}, TP.HCM {med['TP.HCM']:.1f}, tỉnh khác {med['Khác']:.1f} triệu/tháng; "
-      f"khác biệt có ý nghĩa thống kê (Kruskal-Wallis p = {p:.1e}).")
+      f"khác biệt có ý nghĩa thống kê (Kruskal-Wallis p = {p:.1e}; Hà Nội vs TP.HCM Mann-Whitney p = {p_hn_hcm:.1e}) "
+      f"nhưng nhỏ về độ lớn.")
 print(f"- Ngành trả cao nhất (trung vị): {by_cat.index[0]} ({by_cat['median'].iloc[0]:.1f}), {by_cat.index[1]} ({by_cat['median'].iloc[1]:.1f}); "
       f"thấp nhất: {by_cat.index[-1]} ({by_cat['median'].iloc[-1]:.1f}).")
 print(f"- Chênh lệch giữa ngành cao nhất và thấp nhất ≈ {by_cat['median'].iloc[0] - by_cat['median'].iloc[-1]:.1f} triệu; "
@@ -103,10 +104,25 @@ for name, g in [("Toàn bộ", sal)] + [(c, sal[sal.cat == c]) for c in top_cats
     r = linregress(g["experience_months"], np.log(g["salary_avg_num"]))
     rows.append({"ngành": name, "n": len(g), "β/tháng": r.slope, "% tăng/năm": (np.exp(12 * r.slope) - 1) * 100,
                  "R²": r.rvalue ** 2, "p": r.pvalue})
-growth = pd.DataFrame(rows).set_index("ngành").sort_values("% tăng/năm", ascending=False)
-display(growth.round({"β/tháng": 4, "% tăng/năm": 1, "R²": 3}))
+growth = pd.DataFrame(rows).set_index("ngành")
+# Khoảng tin cậy 95% cho % tăng/năm bằng bootstrap (500 lần)
+rng = np.random.default_rng(42)
+ci = {}
+for name, g in [("Toàn bộ", sal)] + [(c, sal[sal.cat == c]) for c in top_cats]:
+    xm, ly = g["experience_months"].to_numpy(), np.log(g["salary_avg_num"].to_numpy())
+    boots = []
+    for _ in range(500):
+        i = rng.integers(0, len(g), len(g))
+        boots.append((np.exp(12 * linregress(xm[i], ly[i]).slope) - 1) * 100)
+    ci[name] = np.percentile(boots, [2.5, 97.5])
+growth["CI95 thấp"] = [ci[n][0] for n in growth.index]
+growth["CI95 cao"] = [ci[n][1] for n in growth.index]
+growth = growth.sort_values("% tăng/năm", ascending=False)
+display(growth.round({"β/tháng": 4, "% tăng/năm": 1, "R²": 3, "CI95 thấp": 1, "CI95 cao": 1}))
 fig, ax = plt.subplots(figsize=(7, 4))
-growth["% tăng/năm"].drop("Toàn bộ").sort_values().plot.barh(ax=ax, color="#c98b6b")
+gg = growth.drop("Toàn bộ").sort_values("% tăng/năm")
+ax.barh(gg.index, gg["% tăng/năm"], color="#c98b6b",
+        xerr=[gg["% tăng/năm"] - gg["CI95 thấp"], gg["CI95 cao"] - gg["% tăng/năm"]], capsize=3)
 ax.axvline(growth.loc["Toàn bộ", "% tăng/năm"], ls="--", c="k", label="Toàn bộ")
 ax.set(xlabel="% tăng lương mỗi năm kinh nghiệm", ylabel="", title="Mức tăng lương theo kinh nghiệm, theo ngành")
 ax.legend()
@@ -123,10 +139,14 @@ savefig("q2_salary_curve.png")
 ("md", "## 3. Kết luận"),
 ("code", """
 t = growth.drop("Toàn bộ")
-print(f"- Tổng thể, mỗi năm kinh nghiệm yêu cầu gắn với lương đăng tuyển cao hơn ≈ {growth.loc['Toàn bộ', '% tăng/năm']:.1f}%.")
+g0 = growth.loc["Toàn bộ"]
+print(f"- Tổng thể, mỗi năm kinh nghiệm yêu cầu gắn với lương đăng tuyển cao hơn ≈ {g0['% tăng/năm']:.1f}% "
+      f"(CI95: {g0['CI95 thấp']:.1f}–{g0['CI95 cao']:.1f}%).")
 print(f"- Trung vị: 'Không yêu cầu' {by_lvl.loc['Không yêu cầu', 'median']:.0f} → '1-2 năm' {by_lvl.loc['1-2 năm', 'median']:.0f} → "
-      f"'3-5 năm' {by_lvl.loc['3-5 năm', 'median']:.0f} → 'Trên 5 năm' {by_lvl.loc['Trên 5 năm', 'median']:.0f} triệu.")
-print(f"- Tăng nhanh nhất: {t.index[0]} ({t['% tăng/năm'].iloc[0]:.1f}%/năm); chậm nhất: {t.index[-1]} ({t['% tăng/năm'].iloc[-1]:.1f}%/năm).")
+      f"'3-5 năm' {by_lvl.loc['3-5 năm', 'median']:.0f} → 'Trên 5 năm' {by_lvl.loc['Trên 5 năm', 'median']:.0f} triệu "
+      f"(nhóm cuối chỉ có {int(by_lvl.loc['Trên 5 năm', 'count'])} tin — cần thận trọng).")
+print(f"- Tăng nhanh nhất: {t.index[0]} ({t['% tăng/năm'].iloc[0]:.1f}%/năm, CI95 {t['CI95 thấp'].iloc[0]:.0f}–{t['CI95 cao'].iloc[0]:.0f}); "
+      f"chậm nhất: {t.index[-1]} ({t['% tăng/năm'].iloc[-1]:.1f}%/năm, CI95 {t['CI95 thấp'].iloc[-1]:.0f}–{t['CI95 cao'].iloc[-1]:.0f}).")
 print(f"- R² tổng thể ≈ {growth.loc['Toàn bộ', 'R²']:.2f}: kinh nghiệm chỉ giải thích một phần biến động lương.")
 """),
 ("md", LIMIT + "\nKinh nghiệm ở đây là kinh nghiệm **yêu cầu** trong tin, không phải kinh nghiệm thực của ứng viên." + AUTO),
@@ -293,15 +313,30 @@ for skill in SKILL_GROUPS:
         if h.sum() >= 10 and (~h).sum() >= 10:
             diffs.append(g.loc[h, "salary_avg_num"].median() - g.loc[~h, "salary_avg_num"].median())
             weights.append(h.sum())
-    rows.append({"kỹ năng": skill, "số tin": int(has.sum()),
+    # bootstrap CI95 cho chênh lệch trong ngành (300 lần, lấy mẫu lại trong từng ngành)
+    boots, rng = [], np.random.default_rng(42)
+    for _ in range(300):
+        bd, bw = [], []
+        for c, g in s.groupby("cat"):
+            h = has.loc[g.index].to_numpy()
+            if h.sum() >= 10 and (~h).sum() >= 10:
+                v = g["salary_avg_num"].to_numpy()
+                bd.append(np.median(rng.choice(v[h], h.sum())) - np.median(rng.choice(v[~h], (~h).sum())))
+                bw.append(h.sum())
+        if bd:
+            boots.append(np.average(bd, weights=bw))
+    lo, hi = np.percentile(boots, [2.5, 97.5]) if boots else (np.nan, np.nan)
+    rows.append({"kỹ năng": skill, "số tin": int(has.sum()), "CI95 thấp": lo, "CI95 cao": hi,
                  "trung vị có (triệu)": s.loc[has, "salary_avg_num"].median(),
                  "chênh lệch thô": s.loc[has, "salary_avg_num"].median() - s.loc[~has, "salary_avg_num"].median(),
                  "chênh lệch trong ngành": np.average(diffs, weights=weights) if diffs else np.nan})
 prem = pd.DataFrame(rows).set_index("kỹ năng").sort_values("chênh lệch trong ngành", ascending=False)
 display(prem.round(1))
-v = prem["chênh lệch trong ngành"].dropna().sort_values()
+pv = prem.dropna(subset=["chênh lệch trong ngành"]).sort_values("chênh lệch trong ngành")
+v = pv["chênh lệch trong ngành"]
 fig, ax = plt.subplots(figsize=(8, 7))
-v.plot.barh(ax=ax, color=np.where(v > 0, "#a3be8c", "#bf616a"))
+ax.barh(pv.index, v, color=np.where(v > 0, "#a3be8c", "#bf616a"),
+        xerr=[v - pv["CI95 thấp"], pv["CI95 cao"] - v], capsize=2)
 ax.axvline(0, c="k")
 ax.set(xlabel="Chênh lệch trung vị lương (triệu), có vs không có kỹ năng, trong cùng ngành", ylabel="",
        title="Kỹ năng gắn với lương đăng tuyển cao hơn")
@@ -311,10 +346,13 @@ savefig("q5_skill_salary_premium.png")
 ("code", """
 overall_top = ex["skill_tags"].value_counts()
 print(f"- Kỹ năng được yêu cầu nhiều nhất: {', '.join(overall_top.index[:3])}.")
-pp = prem["chênh lệch trong ngành"].dropna()
-print(f"- Gắn với lương cao hơn nhất (trong cùng ngành): {pp.index[0]} ({pp.iloc[0]:+.1f} triệu), "
-      f"{pp.index[1]} ({pp.iloc[1]:+.1f}), {pp.index[2]} ({pp.iloc[2]:+.1f}).")
-print(f"- Thấp nhất: {pp.index[-1]} ({pp.iloc[-1]:+.1f} triệu).")
+pp = prem.dropna(subset=["chênh lệch trong ngành"])
+fmt = lambda k: (f"{k} ({pp.loc[k, 'chênh lệch trong ngành']:+.1f}, CI95 {pp.loc[k, 'CI95 thấp']:+.1f}…"
+                 f"{pp.loc[k, 'CI95 cao']:+.1f}; n={pp.loc[k, 'số tin']})")
+print("- Gắn với lương cao hơn nhất (trong cùng ngành, triệu VND): " + "; ".join(fmt(k) for k in pp.index[:3]) + ".")
+sig = pp[pp["CI95 thấp"] > 0].index.tolist()
+print(f"- Kỹ năng có CI95 hoàn toàn > 0: {', '.join(sig) if sig else 'không có'}.")
+print(f"- Thấp nhất: {fmt(pp.index[-1])}.")
 """),
 ("md", LIMIT + "\nChênh lệch là **tương quan**, không phải nhân quả." + AUTO),
 ])

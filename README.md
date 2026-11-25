@@ -26,8 +26,8 @@ CSC17104-final-project/
 │   └── 08_q6_salary_prediction.ipynb        # Q6 (ML) – Thành viên 3
 ├── src/                      # cleaning.py, modeling.py (logic dùng chung, có test)
 ├── tests/                    # pytest
-├── scripts/                  # run_nb.py (chạy notebook), build_nb*.py (sinh notebook)
-├── reports/figures/          # hình xuất cho báo cáo/slide
+├── scripts/                  # run_nb.py (chạy notebook), build_nb*.py (sinh notebook), build_slides.py
+├── reports/                  # report.md (báo cáo nháp), slides.pdf, figures/
 ├── environment.yml
 └── LLM_USAGE.md
 ```
@@ -71,6 +71,7 @@ curl -L -o data/raw/VietJobs.csv https://huggingface.co/datasets/dinhieufam/Viet
 ```bash
 python -m pytest                         # kiểm tra hàm làm sạch & mô hình
 python scripts/run_nb.py notebooks/0*.ipynb   # chạy notebook 01 → 08 theo thứ tự
+python scripts/build_slides.py               # tạo reports/slides.pdf từ hình
 ```
 
 Notebook 02 phải chạy trước 03–08 (tạo `data/processed/vietjobs_clean.parquet`).

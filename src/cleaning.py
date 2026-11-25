@@ -52,6 +52,20 @@ def parse_salary_avg(s) -> float:
     return float(m.group(1)) if m else np.nan
 
 
+def parse_salary_midpoint(s) -> float:
+    """'8.5 - 9.0 triệu' -> 8.75; '14.0 triệu' -> 14.0; '0.0 triệu' (thoả thuận) / NaN -> NaN.
+
+    Dùng thay cho cột `salary_avg` gốc vì cột đó làm tròn xuống (8.5–9.0 -> "8 triệu").
+    """
+    if _is_missing(s):
+        return np.nan
+    nums = [float(x) for x in _NUM.findall(str(s))][:2]
+    nonzero = [x for x in nums if x > 0]  # cận 0 nghĩa là "tới X" / "từ X" → dùng cận còn lại
+    if not nonzero:
+        return np.nan
+    return sum(nonzero) / len(nonzero)
+
+
 def parse_experience_months(s) -> float:
     """'6 tháng' -> 6; '2 năm' -> 24; 'Không yêu cầu' -> 0; không nhận diện -> NaN."""
     if _is_missing(s):
@@ -134,8 +148,9 @@ def clean(raw: pd.DataFrame) -> pd.DataFrame:
     df = raw[raw["country"] == "Việt Nam"].copy()
     df = df.drop_duplicates(subset=["job_title", "location", "description"]).reset_index(drop=True)
 
-    df["salary_avg_num"] = df["salary_avg"].map(parse_salary_avg)
-    df["salary_negotiable"] = df["salary_avg_num"].isna()
+    df["salary_negotiable"] = df["salary_avg"].map(parse_salary_avg).isna()
+    df["salary_avg_num"] = df["salary"].map(parse_salary_midpoint).where(~df["salary_negotiable"])
+    df["salary_negotiable"] = df["salary_negotiable"] | df["salary_avg_num"].isna()
     df["salary_outlier"] = (df["salary_avg_num"] > SALARY_OUTLIER_THRESHOLD) | (
         df["salary_avg_num"] < SALARY_MIN_VALID
     )
@@ -184,6 +199,6 @@ CATEGORY_LABELS = {
     "giáo_dục_đào_tạo_nghiên_cứu": "Giáo dục",
     "y_tế_dược_chăm_sóc_sức_khỏe_công_nghệ_sinh_học": "Y tế/Dược",
     "ngôn_ngữ_dịch_thuật": "Ngôn ngữ/Dịch thuật",
-    "nhóm_nghề_khác": "Khác",
+    "nhóm_nghề_khác": "Nghề khác",
     "nông_nghiệp_năng_lượng_môi_trường": "Nông nghiệp/Môi trường",
 }
