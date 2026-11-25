@@ -49,13 +49,18 @@ def synthetic_clean_df():
             requirements_text=f"yêu cầu {i % 7}", category=["a", "b"][i % 2], salary_min=lo, salary_max=lo + 5,
             salary_avg=f"{lo + 2} triệu",
         ))
+    rows[0].update(salary="0.0 triệu", salary_min=0, salary_max=0, salary_avg="Thoả thuận")
+    rows[1].update(salary="300.0 - 400.0 triệu", salary_min=300, salary_max=400, salary_avg="350 triệu")
     return clean(pd.DataFrame(rows))
 
 
 def test_leakage_guard_runs_without_data_file(synthetic_clean_df):
     X, y = prepare_xy(synthetic_clean_df)
     assert not (set(X.columns) & FORBIDDEN)
-    assert len(X) == 400
+    assert len(X) == 398  # bỏ 1 tin thoả thuận + 1 tin ngoại lai
+    kept = synthetic_clean_df.loc[X.index]
+    assert not kept["salary_negotiable"].any() and not kept["salary_outlier"].any()
+    assert np.allclose(np.exp(y), kept["salary_avg_num"])
 
 
 def test_group_split_keeps_identical_text_on_one_side():

@@ -31,3 +31,7 @@ def test_bare_ai_in_design_list_is_illustrator():
     assert tag_items(["Sử dụng công cụ AI"], SKILL_GROUPS) == ["AI/Machine Learning"]
     assert tag_items(["AI"], SKILL_GROUPS) == ["AI/Machine Learning"]
     assert tag_items(["Data.ai"], SKILL_GROUPS) == []
+
+
+def test_bare_ai_next_to_ps_is_illustrator():
+    assert tag_items(["PS", "AI"], SKILL_GROUPS) == ["Illustrator"]

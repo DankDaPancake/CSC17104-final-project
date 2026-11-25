@@ -59,10 +59,11 @@ def parse_salary_midpoint(s) -> float:
     """
     if _is_missing(s):
         return np.nan
-    nums = [float(x) for x in _NUM.findall(str(s))]
-    if not nums or max(nums) == 0:
+    nums = [float(x) for x in _NUM.findall(str(s))][:2]
+    nonzero = [x for x in nums if x > 0]  # cận 0 nghĩa là "tới X" / "từ X" → dùng cận còn lại
+    if not nonzero:
         return np.nan
-    return sum(nums[:2]) / len(nums[:2])
+    return sum(nonzero) / len(nonzero)
 
 
 def parse_experience_months(s) -> float:
@@ -149,6 +150,7 @@ def clean(raw: pd.DataFrame) -> pd.DataFrame:
 
     df["salary_negotiable"] = df["salary_avg"].map(parse_salary_avg).isna()
     df["salary_avg_num"] = df["salary"].map(parse_salary_midpoint).where(~df["salary_negotiable"])
+    df["salary_negotiable"] = df["salary_negotiable"] | df["salary_avg_num"].isna()
     df["salary_outlier"] = (df["salary_avg_num"] > SALARY_OUTLIER_THRESHOLD) | (
         df["salary_avg_num"] < SALARY_MIN_VALID
     )

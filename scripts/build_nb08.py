@@ -21,7 +21,7 @@ MAE/RMSE/R² trên test, đo bằng triệu VND.
 """),
 ("code", SETUP),
 ("code", """
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV
 from sklearn.inspection import permutation_importance
 from src.modeling import prepare_xy, make_models, evaluate, group_train_test_split, RANDOM_STATE, CAT_COLS, NUM_COLS, TEXT_COL
 
@@ -59,7 +59,7 @@ savefig("q6_model_comparison.png")
 
 *Lưu ý:* một số tin ghi mức lương ngay trong tên/yêu cầu (vd. "Thu nhập upto 20 triệu"). Đó là nội dung thật của tin (ứng viên cũng đọc được), không phải rò rỉ từ cột lương — nhưng giải thích vì sao token như "thu nhập" có hệ số lớn."""),
 ("code", r"""
-mention = X[TEXT_COL].str.contains(r"\d+\s*(triệu|tr\b)", case=False, regex=True)
+mention = X[TEXT_COL].str.contains(r"\d+\s*(?:triệu|tr\b)", case=False, regex=True)
 print(f"Tin có nhắc số tiền trong văn bản: {mention.sum():,} ({mention.mean():.1%})")
 """),
 ("code", """

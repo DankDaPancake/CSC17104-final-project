@@ -15,22 +15,22 @@
 | Bỏ tin đăng trùng (tên việc + địa điểm + mô tả) | **36.457** | 11.500 |
 
 - 29,2% tin để lương "Thoả thuận"; 24 tin lương ngoại lai (< 1 hoặc > 200 triệu/tháng) → **25.796 tin có lương hợp lệ**, trung vị 13,5 triệu/tháng.
-- Lương = **trung điểm thật** của khoảng trong chuỗi `salary` (cột `salary_avg` gốc làm tròn xuống, vd. 8,5–9,0 → 8).
+- Lương = **trung điểm thật** của khoảng trong chuỗi `salary` (cột `salary_avg` gốc làm tròn xuống, vd. 8,5–9,0 → 8); khoảng có một cận bằng 0 ("tới X") dùng cận còn lại.
 - Chuẩn hoá: kinh nghiệm → số tháng + 5 mức; địa điểm → tỉnh chính + 3 vùng (Hà Nội / TP.HCM / Khác); list kỹ năng/phúc lợi;
   phúc lợi (~73k cách viết) và kỹ năng (~29k) gom về 16 và 32 nhóm chuẩn bằng regex (`src/taxonomy.py`).
-- Logic làm sạch, gom nhóm và mô hình có 41 test tự động (`pytest`).
+- Logic làm sạch, gom nhóm và mô hình có 44 test tự động (`pytest`).
 
 ## 3. Kết quả
 
 ### Q1 — Lương theo vùng và ngành (Đăng)
-- Trung vị: Hà Nội 13,5 · TP.HCM 12,5 · tỉnh khác 12,5 triệu/tháng (Kruskal-Wallis p ≈ 1·10⁻²⁹; Hà Nội vs TP.HCM Mann-Whitney p ≈ 2·10⁻²⁷) — có ý nghĩa thống kê nhưng nhỏ về độ lớn. Quận/huyện của Hà Nội và TP.HCM được gộp về thành phố tương ứng.
+- Trung vị: Hà Nội 13,5 · TP.HCM 12,5 · tỉnh khác 12,5 triệu/tháng (Kruskal-Wallis p ≈ 1·10⁻²⁹; Hà Nội vs TP.HCM Mann-Whitney p ≈ 3·10⁻²⁷) — có ý nghĩa thống kê nhưng nhỏ về độ lớn. Quận/huyện của Hà Nội và TP.HCM được gộp về thành phố tương ứng.
 - Ngành cao nhất: CNTT 18,0, Xây dựng/BĐS 16,0; thấp nhất: "Nghề khác" 11,0.
 - Chênh lệch giữa ngành (≈ 7 triệu) lớn hơn nhiều so với giữa vùng (≈ 1 triệu); CNTT tại Hà Nội cao nhất (20 triệu, so với 15,5 ở TP.HCM) — CNTT cũng là ngành chênh lệch Hà Nội − tỉnh khác lớn nhất (6 triệu).
 - Hình: `q1_salary_by_region.png`, `q1_salary_by_category.png`, `q1_heatmap_category_region.png`.
 
 ### Q2 — Kinh nghiệm và lương (Đăng)
 - Trung vị: Không yêu cầu 10 → 1–2 năm 14 → 3–5 năm 20 → trên 5 năm 38 triệu (nhóm cuối chỉ 59 tin có lương — cần thận trọng).
-- Mỗi năm kinh nghiệm yêu cầu ≈ +21,2% lương đăng tuyển (CI95 bootstrap 20,5–21,8%; hồi quy log-lương, R² ≈ 0,21).
+- Mỗi năm kinh nghiệm yêu cầu ≈ +21,1% lương đăng tuyển (CI95 bootstrap 20,5–21,7%; hồi quy log-lương, R² ≈ 0,21).
 - Tăng nhanh nhất: Marketing/Truyền thông (≈ 33%/năm, CI95 31–36); chậm nhất: Xây dựng/BĐS (≈ 12%/năm, CI95 10–13) — hai khoảng không chồng nhau.
 
 ### Q3 — Tin không công bố lương (Tiến)
@@ -54,8 +54,8 @@
 | Mô hình | MAE (triệu) | RMSE | R² |
 |---|---|---|---|
 | Baseline (trung vị) | 5,76 | 11,57 | −0,04 |
-| **Ridge (one-hot + TF-IDF)** | **3,99** | **9,31** | **0,33** |
-| HistGradientBoosting (SVD) | 4,21 | 9,62 | 0,28 |
+| **Ridge (one-hot + TF-IDF)** | **3,99** | **9,30** | **0,33** |
+| HistGradientBoosting (SVD) | 4,25 | 9,71 | 0,27 |
 
 - Chia train/test **theo nhóm văn bản** (tin đăng lại có văn bản giống hệt luôn nằm cùng một phía; 0 văn bản trùng giữa train và test), chọn `alpha` bằng GroupKFold 5-fold.
 - Ridge giảm 31% sai số so với baseline. Văn bản tin tuyển dụng là feature quan trọng nhất, sau đó là số tháng kinh nghiệm.

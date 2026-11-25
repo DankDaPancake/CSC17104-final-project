@@ -151,3 +151,17 @@ def test_clean_uses_true_midpoint():
 def test_category_other_label_distinct_from_region_other():
     from src.cleaning import CATEGORY_LABELS
     assert CATEGORY_LABELS["nhóm_nghề_khác"] == "Nghề khác"
+
+
+def test_midpoint_with_zero_bound_uses_nonzero_bound():
+    from src.cleaning import parse_salary_midpoint
+    assert parse_salary_midpoint("0.0 - 20.0 triệu") == 20.0
+    assert parse_salary_midpoint("8.0 - 0.0 triệu") == 8.0
+
+
+def test_numeric_avg_but_unparseable_range_is_not_kept_as_valid():
+    import pandas as pd
+    from src.cleaning import clean
+    out = clean(pd.DataFrame([_raw_row(salary="0.0 triệu", salary_min=0, salary_max=0, salary_avg="12 triệu")]))
+    row = out.iloc[0]
+    assert row.salary_negotiable or row.salary_outlier

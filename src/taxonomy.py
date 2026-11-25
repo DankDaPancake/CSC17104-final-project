@@ -79,7 +79,7 @@ def tag_items(items: list[str], groups: dict[str, str]) -> list[str]:
     return [name for name, pat in _compiled(groups) if any(pat.search(i) for i in lowered)]
 
 
-_DESIGN_TOOLS = re.compile(r"photoshop|ps|indesign|corel|illustrator|after effects?|premiere|figma|lightroom")
+_DESIGN_TOOLS = re.compile(r"photoshop|\bps\b|indesign|corel|illustrator|after effects?|premiere|figma|lightroom")
 
 
 def _has_design_tool(items: list[str]) -> bool:
