@@ -110,3 +110,24 @@ def test_clean_flags_near_zero_salary_as_outlier():
     row = out.iloc[0]
     assert not row.salary_negotiable
     assert row.salary_outlier
+
+
+@pytest.mark.parametrize("raw,expected", [
+    ("bắc từ liêm", "hà nội"), ("cầu giấy", "hà nội"), ("đống đa", "hà nội"), ("long biên", "hà nội"),
+    ("thủ đức", "hồ chí minh"), ("quận 7", "hồ chí minh"), ("bình thạnh", "hồ chí minh"),
+    ("củ chi", "hồ chí minh"), ("ho chi minh city", "hồ chí minh"), ("tp. thủ đức", "hồ chí minh"),
+    ("['hà nội'", "hà nội"), ("hà nội & hồ chí minh", "hà nội"), ("bắc ninh; hà nội", "bắc ninh"),
+    ("đà nẵng", "đà nẵng"),
+])
+def test_location_districts_map_to_city(raw, expected):
+    assert normalize_location(raw)[0] == expected
+
+
+def test_location_separators_flag_multi():
+    assert normalize_location("hà nội & hồ chí minh")[1]
+    assert normalize_location("hà nội/hồ chí minh")[1]
+
+
+def test_parse_list_never_raises():
+    for bad in ["{[1]}", "{['a']}", "[" * 500]:
+        assert isinstance(parse_list(bad), list)

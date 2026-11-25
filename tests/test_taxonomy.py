@@ -21,3 +21,7 @@ def test_skills():
 
 def test_empty():
     assert tag_items([], BENEFIT_GROUPS) == []
+
+
+def test_benefit_regex_does_not_match_across_items():
+    assert tag_items(["Thưởng KPI", "Nghỉ lễ tết theo luật"], BENEFIT_GROUPS) == ["Thưởng hiệu quả/KPI/doanh số"]

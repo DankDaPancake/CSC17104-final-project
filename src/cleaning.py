@@ -21,7 +21,23 @@ EXPERIENCE_LEVELS = ["Không yêu cầu", "Dưới 1 năm", "1-2 năm", "3-5 nă
 REGIONS = ["Hà Nội", "TP.HCM", "Khác"]
 
 _NUM = re.compile(r"(\d+(?:\.\d+)?)")
-_LOCATION_ALIASES = {"hà đông": "hà nội"}
+_HANOI_DISTRICTS = {
+    "hà đông", "ba đình", "hoàn kiếm", "tây hồ", "long biên", "cầu giấy", "đống đa", "hai bà trưng",
+    "hoàng mai", "thanh xuân", "bắc từ liêm", "nam từ liêm", "từ liêm", "sóc sơn", "đông anh", "gia lâm",
+    "thanh trì", "mê linh", "sơn tây", "ba vì", "phúc thọ", "đan phượng", "hoài đức", "quốc oai",
+    "thạch thất", "chương mỹ", "thanh oai", "thường tín", "phú xuyên", "ứng hòa", "ứng hoà", "mỹ đức",
+    "mỹ đình", "linh đàm", "dương nội", "minh khai", "trương định", "tam trinh", "vĩnh tuy", "cự khối",
+    "phú đô", "kcn quang minh",
+}
+_HCM_DISTRICTS = {
+    "thủ đức", "thành phố thủ đức", "bình thạnh", "gò vấp", "phú nhuận", "tân bình", "tân phú",
+    "bình tân", "củ chi", "cu chi", "hóc môn", "bình chánh", "nhà bè", "cần giờ", "tân sơn nhì",
+    "tân thới nhì", "ho chi minh city", "tp hcm", "tphcm", "hcm", "sài gòn",
+}
+_LOCATION_ALIASES = {d: "hà nội" for d in _HANOI_DISTRICTS} | {d: "hồ chí minh" for d in _HCM_DISTRICTS}
+_LOC_SPLIT = re.compile(r"[,;&/]| và ")
+_LOC_PREFIX = re.compile(r"^(tp\.?|thành phố)\s+")
+_HCM_QUAN = re.compile(r"^quận \d+$")
 
 
 def _is_missing(s) -> bool:
@@ -72,11 +88,23 @@ def normalize_location(s) -> tuple[str, bool]:
     """Trả (tỉnh chính, có nhiều tỉnh hay không)."""
     if _is_missing(s):
         return ("không rõ", False)
-    parts = [p.strip().lower() for p in str(s).split(",") if p.strip()]
+    text = str(s).lower().replace("[", "").replace("]", "").replace("'", "").replace('"', "")
+    parts = [p.strip(" .-") for p in _LOC_SPLIT.split(text) if p.strip(" .-")]
     if not parts:
         return ("không rõ", False)
-    primary = _LOCATION_ALIASES.get(parts[0], parts[0])
-    return (primary, len(parts) > 1)
+    return (_canonical_location(parts[0]), len(parts) > 1)
+
+
+def _canonical_location(loc: str) -> str:
+    loc = loc.split(" - ")[0].split(":")[0].strip()
+    if loc in _LOCATION_ALIASES:
+        return _LOCATION_ALIASES[loc]
+    bare = _LOC_PREFIX.sub("", loc)
+    if bare in _LOCATION_ALIASES:
+        return _LOCATION_ALIASES[bare]
+    if _HCM_QUAN.match(loc):
+        return "hồ chí minh"
+    return loc
 
 
 def to_region(loc: str) -> str:
@@ -95,7 +123,7 @@ def parse_list(s) -> list[str]:
     try:
         value = ast.literal_eval(text)
         items = value if isinstance(value, (list, tuple)) else [value]
-    except (ValueError, SyntaxError):
+    except Exception:  # dữ liệu bẩn: không bao giờ raise
         items = text.strip("[]").split(",")
         items = [i.strip().strip("'\"") for i in items]
     return [str(i).strip() for i in items if str(i).strip()]

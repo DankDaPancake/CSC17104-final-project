@@ -191,7 +191,7 @@ print(f"- Ngành giấu lương nhiều nhất: {r_cat.index[0]} ({r_cat['mean']
 print(f"- Theo kinh nghiệm: 'Không yêu cầu' {r_exp.loc['Không yêu cầu', 'mean']:.0f}% so với 'Trên 5 năm' {r_exp.loc['Trên 5 năm', 'mean']:.0f}%.")
 best = tests["cramers_v"].idxmax()
 print(f"- Tất cả các biến đều có p < 0.05: {bool((tests.p < 0.05).all())}; liên hệ mạnh nhất là '{best}' "
-      f"(Cramér's V = {tests.loc[best, 'cramers_v']:.2f}; < 0.1 yếu, 0.1–0.3 vừa).")
+      f"(Cramér's V = {tests.loc[best, 'cramers_v']:.3f}); mọi liên hệ đều yếu (V < 0.2).")
 """),
 ("md", LIMIT + AUTO),
 ])

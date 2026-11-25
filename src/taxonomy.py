@@ -5,7 +5,7 @@ import re
 
 BENEFIT_GROUPS: dict[str, str] = {
     "Bảo hiểm bắt buộc (BHXH/BHYT/BHTN)": r"bảo hiểm xã hội|bhxh|bhyt|bhtn|bảo hiểm y tế|bảo hiểm thất nghiệp|bảo hiểm bắt buộc|bảo hiểm theo (quy định|luật)",
-    "Bảo hiểm sức khỏe/tai nạn bổ sung": r"bảo hiểm (sức kh|tai nạn|nhân thọ|cao cấp|chăm sóc)|bảo việt|pti|pvi",
+    "Bảo hiểm sức khỏe/tai nạn bổ sung": r"bảo hiểm (sức kh|tai nạn|nhân thọ|cao cấp|chăm sóc)|bảo việt|\bpti\b|\bpvi\b",
     "Lương/thưởng tháng 13": r"tháng 13|thứ 13|lương 13",
     "Thưởng hiệu quả/KPI/doanh số": r"thưởng.*(hiệu quả|kpi|doanh số|doanh thu|kết quả|năng suất|dự án|nóng)|hoa hồng|commission",
     "Thưởng lễ, tết": r"thưởng.*(lễ|tết)|(lễ|tết).*thưởng",
@@ -68,8 +68,9 @@ def _compiled(groups: dict[str, str]) -> list[tuple[str, re.Pattern]]:
 
 
 def tag_items(items: list[str], groups: dict[str, str]) -> list[str]:
-    """Trả danh sách nhóm (không trùng, theo thứ tự định nghĩa) mà ít nhất một phần tử khớp."""
-    text = " | ".join(items).lower()
-    if not text:
-        return []
-    return [name for name, pat in _compiled(groups) if pat.search(text)]
+    """Trả danh sách nhóm (không trùng, theo thứ tự định nghĩa) mà ít nhất một phần tử khớp.
+
+    Mỗi phần tử được so khớp riêng — pattern dạng `thưởng.*tết` không được nối hai phần tử khác nhau.
+    """
+    lowered = [i.lower() for i in items if i]
+    return [name for name, pat in _compiled(groups) if any(pat.search(i) for i in lowered)]

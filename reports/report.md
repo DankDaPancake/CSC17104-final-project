@@ -22,44 +22,47 @@
 ## 3. Kết quả
 
 ### Q1 — Lương theo vùng và ngành (Đăng)
-- Trung vị: Hà Nội 13,0 · TP.HCM 12,0 · tỉnh khác 12,0 triệu/tháng (Kruskal-Wallis p ≈ 3·10⁻²⁸).
+- Trung vị: Hà Nội 13,0 · TP.HCM 12,0 · tỉnh khác 12,0 triệu/tháng (Kruskal-Wallis p ≈ 7·10⁻²⁹). Quận/huyện của Hà Nội và TP.HCM được gộp về thành phố tương ứng.
 - Ngành cao nhất: CNTT 18,0, Xây dựng/BĐS 16,0; thấp nhất: nhóm "Khác" 11,0.
 - Chênh lệch giữa ngành (≈ 7 triệu) lớn hơn nhiều so với giữa vùng (≈ 1 triệu); CNTT tại Hà Nội cao nhất (20 triệu).
 - Hình: `q1_salary_by_region.png`, `q1_salary_by_category.png`, `q1_heatmap_category_region.png`.
 
 ### Q2 — Kinh nghiệm và lương (Đăng)
-- Trung vị: Không yêu cầu 10 → 1–2 năm 13 → 3–5 năm 19 → trên 5 năm 37 triệu.
+- Trung vị: Không yêu cầu 10 → 1–2 năm 13 → 3–5 năm 19 → trên 5 năm 37 triệu (nhóm cuối chỉ ~59 tin có lương — cần thận trọng).
 - Mỗi năm kinh nghiệm yêu cầu ≈ +21,8% lương đăng tuyển (hồi quy log-lương, R² ≈ 0,20).
 - Tăng nhanh nhất: Marketing/Truyền thông (≈ 34,5%/năm); chậm nhất: Xây dựng/BĐS (≈ 12%/năm).
 
 ### Q3 — Tin không công bố lương (Tiến)
 - 29,2% tin để "Thoả thuận"; cao nhất ở nhóm "Khác" (44%) và CNTT (42%), thấp nhất ở Giáo dục (24%).
-- Vị trí càng cao càng hay giấu lương: "Không yêu cầu" 26% → "Trên 5 năm" 69%.
-- Mọi biến đều có liên hệ có ý nghĩa (chi-square), mạnh nhất là mức kinh nghiệm (Cramér's V ≈ 0,15).
+- Từ mức 1–2 năm trở lên, kinh nghiệm càng cao càng hay giấu lương: 28% → 41% (3–5 năm) → 69% (trên 5 năm); riêng "Dưới 1 năm" thấp nhất (15%), "Không yêu cầu" 26%.
+- TP.HCM (35%) và tỉnh khác (36%) giấu lương nhiều hơn Hà Nội (22%); thực tập (47%) cao hơn toàn thời gian (29%).
+- Mọi biến đều có liên hệ có ý nghĩa (chi-square) nhưng **yếu**: vùng (Cramér's V ≈ 0,150) và mức kinh nghiệm (≈ 0,147) gần như ngang nhau, ngành ≈ 0,09.
 
 ### Q4 — Phúc lợi (Tiến)
-- Phổ biến nhất: bảo hiểm bắt buộc (71% tin), du lịch/nghỉ mát (44%), thưởng lễ tết (43%).
+- Phổ biến nhất: bảo hiểm bắt buộc (71% tin), du lịch/nghỉ mát (44%), lương/thưởng tháng 13 (41%).
 - Tương quan số nhóm phúc lợi – lương yếu (Spearman ρ ≈ 0,14).
-- Khác biệt lớn nhất giữa nhóm lương cao và thấp: thưởng hiệu quả/KPI/doanh số (+14 điểm %); đào tạo lại phổ biến hơn ở nhóm lương thấp (−5 điểm %).
+- Khác biệt lớn nhất giữa nhóm lương cao và thấp: thưởng hiệu quả/KPI/doanh số (+13 điểm %); đào tạo lại phổ biến hơn ở nhóm lương thấp (−5 điểm %).
 
 ### Q5 — Kỹ năng (Thành viên 3)
 - Được yêu cầu nhiều nhất: Excel/tin học văn phòng, phần mềm kế toán/MISA, AutoCAD.
-- So sánh **trong cùng ngành**, kỹ năng gắn với lương cao hơn nhất: SQL (+7,5 triệu), Python (+6,2), JavaScript (+6,0); Canva thấp nhất (−1,5).
+- So sánh **trong cùng ngành**, kỹ năng gắn với lương cao hơn nhất: SQL (+7,5 triệu), Python (+6,2), JavaScript (+6,0); Canva thấp nhất (−1,5). Đây là chênh lệch trung vị, chưa có khoảng tin cậy (Python chỉ ~100 tin).
 
 ### Q6 — Dự đoán lương (Thành viên 3)
 | Mô hình | MAE (triệu) | RMSE | R² |
 |---|---|---|---|
 | Baseline (trung vị) | 5,63 | 10,81 | −0,05 |
-| **Ridge (one-hot + TF-IDF)** | **3,80** | **8,42** | **0,37** |
-| HistGradientBoosting (SVD) | 4,03 | 8,73 | 0,32 |
+| **Ridge (one-hot + TF-IDF)** | **3,80** | **8,41** | **0,37** |
+| HistGradientBoosting (SVD) | 4,02 | 8,76 | 0,31 |
 
-- Ridge giảm 32% sai số so với baseline. Văn bản tin tuyển dụng là feature quan trọng nhất, sau đó là số tháng kinh nghiệm.
+- Ridge giảm 33% sai số so với baseline. Văn bản tin tuyển dụng là feature quan trọng nhất, sau đó là số tháng kinh nghiệm.
 - Từ khoá tăng lương: "trưởng phòng", "manager", "giám đốc", "kinh doanh"; giảm lương: "thực tập", "tập sinh", "intern", "ctv".
 
 ## 4. Hạn chế
 - Chỉ một nền tảng (TopCV) trong 2025; lương **đăng tuyển** ≠ lương thực nhận; 29% tin thiếu lương (không ngẫu nhiên — xem Q3).
 - Gom nhóm phúc lợi/kỹ năng bằng regex có thể bỏ sót cách viết hiếm (kỹ năng: 59% tin khớp ít nhất một nhóm).
 - Các chênh lệch là tương quan, không phải quan hệ nhân quả.
+- `salary_avg` của bộ dữ liệu gốc làm tròn xuống (vd. 8,5–9,0 → 8), nên trung vị có thể thấp hơn trung điểm thật ~0,5 triệu.
+- Q6: ~7% tin trong tập test có văn bản trùng hệt một tin trong tập train (đăng lại dưới tên khác) → MAE có thể hơi lạc quan.
 
 ## 5. Tái lập
 ```bash
