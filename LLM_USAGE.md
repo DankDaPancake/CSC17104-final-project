@@ -17,3 +17,4 @@ Mỗi khi sử dụng LLM cho ý tưởng, thiết kế kế hoạch, viết mã
 | Ngày | Thành viên | Công cụ | Mục đích sử dụng | Kiểm chứng & chỉnh sửa |
 |---|---|---|---|---|
 | 2026-11-21 | Đăng | Claude / Antigravity | Lên kế hoạch đồ án, lập lộ trình khởi động 21–24/11 và tạo khung repository ban đầu (`README.md`, `environment.yml`, `.gitignore`, notebook mẫu). | Đã rà soát cấu trúc thư mục, điều chỉnh lịch theo deadline 15/12 cho nhóm 3 người. |
+| 2026-11-25 | (thành viên chạy phiên) | Claude Code (Claude Opus 5.5) | Kiểm tra nguồn/giấy phép VietJobs, viết thiết kế + kế hoạch, cài đặt `src/cleaning.py`, `src/modeling.py`, sinh notebook 01–08 và nhận xét tự động. | Cần thành viên đọc lại kết quả, viết lại nhận xét/kết luận bằng lời của mình, kiểm chứng số liệu trong notebook. |

@@ -19,10 +19,10 @@
 ## 2. Phần bàn giao cho Tiến xử lý (22/11 – 24/11)
 
 ### Việc 1 — Kiểm tra bộ dữ liệu ưu tiên: VietJobs
-- [ ] Xác minh nguồn gốc chính thức và cách thu thập của **VietJobs** (~48.000 tin tuyển dụng từ TopCV).
-- [ ] Kiểm tra và ghi rõ **giấy phép (license) của chính bộ dữ liệu** (lưu ý: cần giấy phép của dữ liệu, không chỉ giấy phép của code repo đi kèm).
-- [ ] Tải thử dữ liệu về thư mục `data/raw/` (không commit file dữ liệu lên Git).
-- [ ] Chạy thử `notebooks/01_collection_exploration.ipynb` để kiểm tra:
+- [x] Xác minh nguồn gốc chính thức và cách thu thập của **VietJobs** (~48.000 tin tuyển dụng từ TopCV).
+- [x] Kiểm tra và ghi rõ **giấy phép (license) của chính bộ dữ liệu** (lưu ý: cần giấy phép của dữ liệu, không chỉ giấy phép của code repo đi kèm).
+- [x] Tải thử dữ liệu về thư mục `data/raw/` (không commit file dữ liệu lên Git).
+- [x] Chạy thử `notebooks/01_collection_exploration.ipynb` để kiểm tra:
   - Số dòng, số cột thực tế (yêu cầu môn học: >= 3.000 dòng, >= 10 cột)
   - Các cột quan trọng: lương, địa điểm, kinh nghiệm, kỹ năng, phúc lợi, loại hợp đồng
   - Tỉ lệ dữ liệu thiếu và định dạng thô
@@ -32,8 +32,8 @@
 - [ ] **Nếu đến 24/11 vẫn chưa xác nhận được giấy phép VietJobs:** Chuyển sang phương án dự phòng **HealthyAir TP.HCM + Open-Meteo**, tổng hợp nguồn/giấy phép/quy mô tương tự và gửi giảng viên duyệt.
 
 ### Việc 3 — Cập nhật repo & xác nhận chạy được
-- [ ] Cập nhật **trạng thái duyệt** và **hướng dẫn/link tải dữ liệu** vào `README.md`.
-- [ ] Cập nhật tên tệp dữ liệu (`DATA_FILE`) trong `notebooks/01_collection_exploration.ipynb` và chạy kiểm tra lại từ đầu đến cuối.
+- [x] Cập nhật **trạng thái duyệt** và **hướng dẫn/link tải dữ liệu** vào `README.md`.
+- [x] Cập nhật tên tệp dữ liệu (`DATA_FILE`) trong `notebooks/01_collection_exploration.ipynb` và chạy kiểm tra lại từ đầu đến cuối.
 - [ ] Xác nhận tạo môi trường từ `environment.yml` hoạt động bình thường trên máy của Tiến (và báo nhóm nếu cần bổ sung thư viện).
 
 ---
@@ -54,3 +54,10 @@ jupyter lab
 ```
 
 > **Lưu ý Git:** Không commit các tệp dữ liệu (`.csv`, `.xlsx`, `.parquet`, `.zip`...) lên repo — `.gitignore` đã cấu hình sẵn để bỏ qua các tệp trong `data/raw/` và `data/processed/`.
+
+
+---
+
+## Cập nhật 25/11
+- Nhóm chốt **VietJobs**. Kết quả kiểm tra, nguồn và giấy phép: [DATASET_PROPOSAL.md](DATASET_PROPOSAL.md).
+- **Còn lại cho Tiến:** gửi `DATASET_PROPOSAL.md` cho giảng viên và cập nhật trạng thái duyệt vào README.
