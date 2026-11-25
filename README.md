@@ -3,27 +3,33 @@
 Đồ án cuối kỳ môn **CSC17104 – Lập trình cho Khoa học Dữ liệu** (Nhóm 3 thành viên).
 
 ## Trạng thái dự án
-- **Trạng thái bộ dữ liệu:** Đang kiểm tra giấy phép & chờ giảng viên duyệt
-  - **Phương án ưu tiên:** VietJobs (~48.000 tin tuyển dụng từ TopCV)
-  - **Phương án dự phòng:** HealthyAir TP.HCM + Open-Meteo
+- **Bộ dữ liệu:** Nhóm đã chốt **VietJobs** (48.092 tin tuyển dụng TopCV, 18 cột) — chờ giảng viên duyệt (đề xuất: [docs/DATASET_PROPOSAL.md](docs/DATASET_PROPOSAL.md))
+- **Thiết kế & kế hoạch:** [docs/superpowers/specs/](docs/superpowers/specs/) · [docs/superpowers/plans/](docs/superpowers/plans/)
 - **Hạn nộp:** 15/12/2026
 
 ## Cấu trúc thư mục
 
 ```text
-csc17104-final-project/
+CSC17104-final-project/
 ├── data/
-│   ├── raw/              # Dữ liệu gốc (không commit lên Git)
-│   └── processed/        # Dữ liệu sau khi làm sạch (không commit lên Git)
-├── docs/
-│   ├── PLAN_DANG.md      # Kế hoạch khởi động dự án (21/11 – 24/11)
-│   └── HANDOVER_TIEN.md  # Tài liệu bàn giao phần việc còn lại cho Tiến
+│   ├── raw/                  # VietJobs.csv (không commit)
+│   └── processed/            # vietjobs_clean.parquet (sinh bởi notebook 02, không commit)
+├── docs/                     # đề xuất dữ liệu, kế hoạch, thiết kế
 ├── notebooks/
-│   └── 01_collection_exploration.ipynb
-├── environment.yml       # Môi trường Conda
-├── LLM_USAGE.md          # Nhật ký sử dụng công cụ LLM
-├── .gitignore
-└── README.md
+│   ├── 01_collection_exploration.ipynb
+│   ├── 02_cleaning.ipynb
+│   ├── 03_q1_salary_region_category.ipynb   # Q1 – Đăng
+│   ├── 04_q2_experience_salary.ipynb        # Q2 – Đăng
+│   ├── 05_q3_negotiable_salary.ipynb        # Q3 – Tiến
+│   ├── 06_q4_benefits.ipynb                 # Q4 – Tiến
+│   ├── 07_q5_skills.ipynb                   # Q5 – Thành viên 3
+│   └── 08_q6_salary_prediction.ipynb        # Q6 (ML) – Thành viên 3
+├── src/                      # cleaning.py, modeling.py (logic dùng chung, có test)
+├── tests/                    # pytest
+├── scripts/                  # run_nb.py (chạy notebook), build_nb*.py (sinh notebook)
+├── reports/figures/          # hình xuất cho báo cáo/slide
+├── environment.yml
+└── LLM_USAGE.md
 ```
 
 ## Thiết lập môi trường
@@ -53,9 +59,21 @@ conda env update -f environment.yml --prune
 
 ## Hướng dẫn tải dữ liệu
 
-*(Sẽ cập nhật link tải trực tiếp và tên tệp chuẩn sau khi chốt và được giảng viên duyệt bộ dữ liệu vào 24/11).*
+```bash
+curl -L -o data/raw/VietJobs.csv https://huggingface.co/datasets/dinhieufam/VietJobs/resolve/main/VietJobs.csv
+```
 
-Đặt các tệp dữ liệu gốc vào thư mục `data/raw/`.
+- **Nguồn:** Pham Dinh, H., Nguyen Huy, H., & El-Haj, M. (2026). *VietJobs: A Vietnamese Job Advertisement Dataset*. LREC 2026. [arXiv:2603.05262](https://arxiv.org/abs/2603.05262) · [GitHub](https://github.com/VinNLP/VietJobs) · [Hugging Face](https://huggingface.co/datasets/dinhieufam/VietJobs)
+- **Giấy phép:** mã nguồn MIT, bài báo CC BY 4.0; trang dataset trên Hugging Face **không ghi license** → chỉ dùng cho mục đích học tập, có trích dẫn.
+
+## Chạy lại toàn bộ
+
+```bash
+python -m pytest                         # kiểm tra hàm làm sạch & mô hình
+python scripts/run_nb.py notebooks/0*.ipynb   # chạy notebook 01 → 08 theo thứ tự
+```
+
+Notebook 02 phải chạy trước 03–08 (tạo `data/processed/vietjobs_clean.parquet`).
 
 ## Thành viên nhóm
 

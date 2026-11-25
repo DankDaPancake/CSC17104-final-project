@@ -15,3 +15,5 @@ dependencies:
   - requests
   - openpyxl
   - pyarrow
+  - pytest
+  - nbconvert
