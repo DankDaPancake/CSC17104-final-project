@@ -77,3 +77,14 @@ def evaluate(models: dict[str, Pipeline], X_train, X_test, y_train, y_test) -> p
             "R2": r2_score(y_true, y_pred),
         }
     return pd.DataFrame(rows).T[["MAE", "RMSE", "R2"]]
+
+
+def group_train_test_split(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2,
+                           random_state: int = RANDOM_STATE):
+    """Chia train/test sao cho các tin có văn bản giống hệt (tin đăng lại) nằm cùng một phía."""
+    from sklearn.model_selection import GroupShuffleSplit
+
+    groups = X[TEXT_COL].str.lower().str.strip()
+    train_idx, test_idx = next(GroupShuffleSplit(n_splits=1, test_size=test_size,
+                                                 random_state=random_state).split(X, y, groups))
+    return X.iloc[train_idx], X.iloc[test_idx], y.iloc[train_idx], y.iloc[test_idx]

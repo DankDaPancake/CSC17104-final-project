@@ -16,6 +16,7 @@ trình bày các quyết định làm sạch và kiểm tra kết quả trước
 | Vấn đề | Quyết định |
 |---|---|
 | Lương "Thoả thuận" lưu là 0 | `salary_negotiable=True`, `salary_avg_num=NaN` |
+| `salary_avg` gốc làm tròn xuống (8,5–9,0 → "8 triệu") | `salary_avg_num` = trung điểm thật tính từ chuỗi `salary` |
 | Lương < 1 triệu hoặc > 200 triệu/tháng | `salary_outlier=True` (lương giờ/ngày, lỗi nhập) — loại khỏi phân tích lương |
 | Kinh nghiệm dạng chữ | `experience_months` (số) + `experience_level` (nhóm có thứ tự) |
 | Địa điểm không chuẩn, nhiều tỉnh/tin | `location_primary` (tỉnh đầu, "hà đông"→"hà nội"), `multi_location`, `region` |

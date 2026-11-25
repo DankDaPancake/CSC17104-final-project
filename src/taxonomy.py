@@ -50,7 +50,7 @@ SKILL_GROUPS: dict[str, str] = {
     ".NET/C#": r"\.net|c#",
     "PHP": r"\bphp\b",
     "Docker/Cloud": r"docker|kubernetes|\baws\b|azure|gcp",
-    "AI/Machine Learning": r"\bai\b|trí tuệ nhân tạo|chatgpt|machine learning|deep learning",
+    "AI/Machine Learning": r"(?<![.\w])ai\b|trí tuệ nhân tạo|chatgpt|machine learning|deep learning",
     "Tiếng Anh": r"tiếng anh|english|toeic|ielts",
     "Bán hàng/đàm phán": r"bán hàng|đàm phán|telesales|thuyết phục|chốt sale",
     "Quản lý dự án": r"quản lý dự án|project management",
@@ -72,5 +72,15 @@ def tag_items(items: list[str], groups: dict[str, str]) -> list[str]:
 
     Mỗi phần tử được so khớp riêng — pattern dạng `thưởng.*tết` không được nối hai phần tử khác nhau.
     """
-    lowered = [i.lower() for i in items if i]
+    lowered = [i.lower().strip() for i in items if i]
+    if groups is SKILL_GROUPS and "ai" in lowered and _has_design_tool(lowered):
+        # "AI" đứng riêng cạnh Photoshop/InDesign... là Adobe Illustrator, không phải trí tuệ nhân tạo
+        lowered = ["illustrator" if i == "ai" else i for i in lowered]
     return [name for name, pat in _compiled(groups) if any(pat.search(i) for i in lowered)]
+
+
+_DESIGN_TOOLS = re.compile(r"photoshop|ps|indesign|corel|illustrator|after effects?|premiere|figma|lightroom")
+
+
+def _has_design_tool(items: list[str]) -> bool:
+    return any(_DESIGN_TOOLS.search(i) for i in items)

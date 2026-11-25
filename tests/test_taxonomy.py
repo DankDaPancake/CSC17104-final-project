@@ -15,7 +15,6 @@ def test_item_can_match_multiple_groups_and_dedup():
 def test_skills():
     assert tag_items(["Thành thạo Excel", "Adobe Photoshop"], SKILL_GROUPS) == ["Excel/Tin học văn phòng", "Photoshop"]
     assert tag_items(["Java", "JavaScript"], SKILL_GROUPS) == ["Java", "JavaScript"]
-    assert tag_items(["AI"], SKILL_GROUPS) == ["AI/Machine Learning"]
     assert tag_items(["email"], SKILL_GROUPS) == []  # 'ai' inside a word must not match
 
 
@@ -25,3 +24,10 @@ def test_empty():
 
 def test_benefit_regex_does_not_match_across_items():
     assert tag_items(["Thưởng KPI", "Nghỉ lễ tết theo luật"], BENEFIT_GROUPS) == ["Thưởng hiệu quả/KPI/doanh số"]
+
+
+def test_bare_ai_in_design_list_is_illustrator():
+    assert tag_items(["Photoshop", "AI"], SKILL_GROUPS) == ["Photoshop", "Illustrator"]
+    assert tag_items(["Sử dụng công cụ AI"], SKILL_GROUPS) == ["AI/Machine Learning"]
+    assert tag_items(["AI"], SKILL_GROUPS) == ["AI/Machine Learning"]
+    assert tag_items(["Data.ai"], SKILL_GROUPS) == []
