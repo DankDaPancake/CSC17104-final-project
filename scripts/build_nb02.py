@@ -1,4 +1,8 @@
-from nbtools import build
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from nbtools import build  # noqa: E402
 
 build("notebooks/02_cleaning.ipynb", [
 ("md", """
