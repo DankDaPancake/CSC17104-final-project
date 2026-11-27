@@ -278,7 +278,7 @@ print(f"- Chênh lệch lớn nhất giữa nhóm lương cao và thấp: '{diff
 build("notebooks/07_q5_skills.ipynb", [
 ("md", """
 # Q5. Kỹ năng nào được tuyển nhiều nhất theo ngành? Kỹ năng nào gắn với lương cao hơn?
-**Người phụ trách:** Thành viên 3
+**Người phụ trách:** Hiếu
 
 **Phương pháp:** `technical_skills` là văn bản tự do (~29.000 cách viết) → gom về 32 nhóm kỹ năng bằng regex
 (`src/taxonomy.py`). Đếm theo ngành; với mỗi kỹ năng có ≥ 100 tin có lương: so sánh trung vị lương **trong cùng ngành**

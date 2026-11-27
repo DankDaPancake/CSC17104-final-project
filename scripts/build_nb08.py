@@ -8,7 +8,7 @@ from nbtools import SETUP, build  # noqa: E402
 build("notebooks/08_q6_salary_prediction.ipynb", [
 ("md", """
 # Q6 (ML). Có thể dự đoán mức lương đăng tuyển từ nội dung tin tuyển dụng không?
-**Người phụ trách:** Thành viên 3
+**Người phụ trách:** Hiếu
 
 **Bài toán:** hồi quy `log(salary_avg_num)` (triệu VND/tháng) trên các tin có lương hợp lệ.
 **Feature:** ngành, vùng, mức kinh nghiệm, loại hợp đồng, số tháng kinh nghiệm, số phúc lợi, số kỹ năng,

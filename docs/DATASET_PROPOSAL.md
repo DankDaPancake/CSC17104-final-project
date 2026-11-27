@@ -1,4 +1,7 @@
-# Đề xuất bộ dữ liệu — Nhóm CSC17104 (gửi giảng viên)
+# Đề xuất bộ dữ liệu — Nhóm drn<5 (CSC17104, gửi giảng viên)
+
+- **Thành viên:** Lý Huỳnh Minh Đăng (`24127272`), Trần Minh Tiến (`24127130`), Trương Lê Trung Hiếu (`24127169`)
+- **Repository:** https://github.com/DankDaPancake/CSC17104-final-project
 
 ## 1. Bộ dữ liệu: VietJobs
 - **Mô tả:** 48.092 tin tuyển dụng tiếng Việt thu thập từ TopCV năm 2025, phủ 34 tỉnh/thành, 16 nhóm ngành.
@@ -26,5 +29,5 @@
 | Q2 | Đăng | Mỗi năm kinh nghiệm làm tăng lương bao nhiêu, và mức tăng có khác giữa các ngành? |
 | Q3 | Tiến | Tin để lương "Thoả thuận" tập trung ở ngành / mức kinh nghiệm / vùng nào? |
 | Q4 | Tiến | Phúc lợi nào phổ biến nhất; lương cao có đi kèm nhiều phúc lợi hơn không? |
-| Q5 | Thành viên 3 | Kỹ năng nào được tuyển nhiều nhất theo ngành; kỹ năng nào gắn với lương cao hơn? |
-| Q6 (ML) | Thành viên 3 | Dự đoán mức lương đăng tuyển từ ngành, vùng, kinh nghiệm, loại hợp đồng và văn bản tin tuyển dụng (baseline vs Ridge vs Gradient Boosting). |
+| Q5 | Hiếu | Kỹ năng nào được tuyển nhiều nhất theo ngành; kỹ năng nào gắn với lương cao hơn? |
+| Q6 (ML) | Hiếu | Dự đoán mức lương đăng tuyển từ ngành, vùng, kinh nghiệm, loại hợp đồng và văn bản tin tuyển dụng (baseline vs Ridge vs Gradient Boosting). |

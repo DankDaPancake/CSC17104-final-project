@@ -18,7 +18,10 @@ W, H = 13.33, 7.5
 
 SLIDES = [
     ("title", "Thị trường tuyển dụng Việt Nam qua dữ liệu VietJobs",
-     ["CSC17104 – Lập trình cho Khoa học Dữ liệu", "Nhóm: Đăng · Tiến · Thành viên 3", "12/2026"]),
+     ["CSC17104 – Lập trình cho Khoa học Dữ liệu · Nhóm drn<5",
+      "Lý Huỳnh Minh Đăng (24127272) · Trần Minh Tiến (24127130)",
+      "Trương Lê Trung Hiếu (24127169)",
+      "12/2026"]),
     ("bullets", "Dữ liệu & làm sạch", [
         "VietJobs (LREC 2026): 48.092 tin tuyển dụng TopCV năm 2025, 18 cột",
         "Lọc Việt Nam, bỏ 11.500 tin đăng trùng → 36.457 tin",

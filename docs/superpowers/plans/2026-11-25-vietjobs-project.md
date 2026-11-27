@@ -155,7 +155,7 @@ Bước chung cho mỗi task: viết notebook → `jupyter nbconvert --execute -
 | 5 | `04_q2_experience_salary.ipynb` | Đăng | trung vị lương theo `experience_level` (thứ tự cố định); OLS `log(salary) ~ experience_months` từng ngành (top 8 ngành) → bảng % tăng/năm = `exp(12·β)−1` |
 | 6 | `05_q3_negotiable_salary.ipynb` | Tiến | tỉ lệ `salary_negotiable` theo `category`, `experience_level`, `region`; `scipy.stats.chi2_contingency` cho từng biến |
 | 7 | `06_q4_benefits.ipynb` | Tiến | `explode("benefits_list")`, chuẩn hoá lower/strip, top 20; tỉ lệ top 10 phúc lợi theo nhóm lương (quartile); Spearman `n_benefits ~ salary_avg_num` |
-| 8 | `07_q5_skills.ipynb` | TV3 | `explode("technical_skills_list")`, lower/strip, top 15 mỗi ngành (top 6 ngành); với kỹ năng xuất hiện ≥ 100 tin: chênh lệch trung vị lương có/không kỹ năng, top 15 |
+| 8 | `07_q5_skills.ipynb` | Hiếu | `explode("technical_skills_list")`, lower/strip, top 15 mỗi ngành (top 6 ngành); với kỹ năng xuất hiện ≥ 100 tin: chênh lệch trung vị lương có/không kỹ năng, top 15 |
 
 ---
 
@@ -197,7 +197,7 @@ def test_models_fit_and_evaluate(small_clean_df):
 
 ---
 
-### Task 10: Notebook Q6 (`08_q6_salary_prediction.ipynb`) — TV3
+### Task 10: Notebook Q6 (`08_q6_salary_prediction.ipynb`) — Hiếu
 
 - [ ] **Step 1:** `prepare_xy` → split 80/20 `random_state=42` → `GridSearchCV` 5-fold trên train cho `ridge__regressor__alpha ∈ {0.3,1,3,10}` → `evaluate` → bảng so sánh 3 mô hình.
 - [ ] **Step 2:** Giải thích: top 20 hệ số Ridge (tên feature từ `get_feature_names_out`), `permutation_importance` cho HGB trên test; hình residual vs dự đoán; MAE theo ngành.

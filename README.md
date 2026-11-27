@@ -1,6 +1,6 @@
 # CSC17104 Final Project — Programming for Data Science
 
-Đồ án cuối kỳ môn **CSC17104 – Lập trình cho Khoa học Dữ liệu** (Nhóm 3 thành viên).
+Đồ án cuối kỳ môn **CSC17104 – Lập trình cho Khoa học Dữ liệu** — Nhóm **drn<5** (3 thành viên).
 
 ## Trạng thái dự án
 - **Bộ dữ liệu:** Nhóm đã chốt **VietJobs** (48.092 tin tuyển dụng TopCV, 18 cột) — chờ giảng viên duyệt (đề xuất: [docs/DATASET_PROPOSAL.md](docs/DATASET_PROPOSAL.md))
@@ -22,8 +22,8 @@ CSC17104-final-project/
 │   ├── 04_q2_experience_salary.ipynb        # Q2 – Đăng
 │   ├── 05_q3_negotiable_salary.ipynb        # Q3 – Tiến
 │   ├── 06_q4_benefits.ipynb                 # Q4 – Tiến
-│   ├── 07_q5_skills.ipynb                   # Q5 – Thành viên 3
-│   └── 08_q6_salary_prediction.ipynb        # Q6 (ML) – Thành viên 3
+│   ├── 07_q5_skills.ipynb                   # Q5 – Hiếu
+│   └── 08_q6_salary_prediction.ipynb        # Q6 (ML) – Hiếu
 ├── src/                      # cleaning.py, modeling.py (logic dùng chung, có test)
 ├── tests/                    # pytest
 ├── scripts/                  # run_nb.py (chạy notebook), build_nb*.py (sinh notebook), build_slides.py
@@ -76,10 +76,10 @@ python scripts/build_slides.py               # tạo reports/slides.pdf từ hì
 
 Notebook 02 phải chạy trước 03–08 (tạo `data/processed/vietjobs_clean.parquet`).
 
-## Thành viên nhóm
+## Thành viên nhóm (drn<5)
 
 | Thành viên | MSSV | Phụ trách chính |
 |---|---|---|
-| Đăng | TBD | Khởi tạo repo/khung dự án & 2 câu hỏi phân tích |
-| Tiến | TBD | Tiếp nhận chốt dữ liệu/xin duyệt (22–24/11) & 2 câu hỏi phân tích |
-| Thành viên 3 | TBD | 2 câu hỏi phân tích |
+| Lý Huỳnh Minh Đăng | 24127272 | Khởi tạo repo/khung dự án & Q1, Q2 |
+| Trần Minh Tiến | 24127130 | Tiếp nhận chốt dữ liệu/xin duyệt & Q3, Q4 |
+| Trương Lê Trung Hiếu | 24127169 | Dựng pipeline phân tích & Q5, Q6 (ML) |

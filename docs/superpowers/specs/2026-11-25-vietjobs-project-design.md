@@ -1,7 +1,7 @@
 # Thiết kế đồ án CSC17104 — Phân tích thị trường tuyển dụng Việt Nam (VietJobs)
 
 - **Ngày:** 25/11/2026 — **Hạn nộp:** 15/12/2026
-- **Nhóm:** Đăng, Tiến, Thành viên 3 (mỗi người 2 câu hỏi, ≥ 1 câu ML)
+- **Nhóm:** Đăng, Tiến, Hiếu (mỗi người 2 câu hỏi, ≥ 1 câu ML)
 - **Trạng thái:** Nhóm đã duyệt (25/11). Chờ giảng viên duyệt bộ dữ liệu.
 
 ## 1. Mục tiêu & lý do
@@ -40,8 +40,8 @@ Trả lời 6 câu hỏi về lương, kinh nghiệm, phúc lợi, kỹ năng v�
 | Q2 | Đăng | Mỗi năm kinh nghiệm tăng lương bao nhiêu, có khác giữa ngành? | trung vị theo mức KN, hồi quy log-lương ~ KN × ngành |
 | Q3 | Tiến | Tin "Thoả thuận" tập trung ở ngành / mức KN / vùng nào? | tỉ lệ theo nhóm, chi-square |
 | Q4 | Tiến | Phúc lợi nào phổ biến; lương cao có kèm nhiều phúc lợi hơn? | explode list, top-N, tương quan số phúc lợi ~ lương |
-| Q5 | TV3 | Kỹ năng nào được tuyển nhiều theo ngành; kỹ năng nào gắn lương cao? | explode + chuẩn hoá kỹ năng, top-N, chênh lệch trung vị lương |
-| Q6 (ML) | TV3 | Dự đoán `salary_avg` từ thuộc tính + văn bản | baseline (trung vị theo ngành) vs Ridge (TF-IDF + one-hot) vs Gradient Boosting; MAE/RMSE/R² trên test; giải thích feature |
+| Q5 | Hiếu | Kỹ năng nào được tuyển nhiều theo ngành; kỹ năng nào gắn lương cao? | explode + chuẩn hoá kỹ năng, top-N, chênh lệch trung vị lương |
+| Q6 (ML) | Hiếu | Dự đoán `salary_avg` từ thuộc tính + văn bản | baseline (trung vị theo ngành) vs Ridge (TF-IDF + one-hot) vs Gradient Boosting; MAE/RMSE/R² trên test; giải thích feature |
 
 **Quy tắc ML (Q6):** chỉ dùng tin có lương; target `log(salary_avg)`; **không** dùng `salary`, `salary_min`, `salary_max` làm feature; chia train/test trước mọi fit (TF-IDF fit trên train); `random_state=42`.
 

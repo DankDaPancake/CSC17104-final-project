@@ -1,7 +1,13 @@
 # Báo cáo đồ án CSC17104 — Thị trường tuyển dụng Việt Nam qua dữ liệu VietJobs
 
+- **Nhóm:** drn<5
+- **Thành viên:**
+  - Lý Huỳnh Minh Đăng — `24127272` (Q1, Q2)
+  - Trần Minh Tiến — `24127130` (Q3, Q4)
+  - Trương Lê Trung Hiếu — `24127169` (Q5, Q6 ML)
+
 > **Bản nháp sinh tự động (25/11/2026)** từ kết quả notebook 01–08. Mỗi thành viên cần viết lại phần nhận xét
-> của câu hỏi mình phụ trách bằng lời của mình, kiểm tra số liệu, và bổ sung MSSV.
+> của câu hỏi mình phụ trách bằng lời của mình và kiểm tra số liệu.
 
 ## 1. Dữ liệu
 - **Nguồn:** VietJobs (Pham Dinh, Nguyen Huy & El-Haj, LREC 2026) — 48.092 tin tuyển dụng TopCV năm 2025, 18 cột.
@@ -44,13 +50,13 @@
 - Tương quan số nhóm phúc lợi – lương yếu (Spearman ρ ≈ 0,14).
 - Khác biệt lớn nhất giữa nhóm lương cao và thấp: thưởng hiệu quả/KPI/doanh số (+14 điểm %); đào tạo lại phổ biến hơn ở nhóm lương thấp (−5 điểm %).
 
-### Q5 — Kỹ năng (Thành viên 3)
+### Q5 — Kỹ năng (Hiếu)
 - Được yêu cầu nhiều nhất: Excel/tin học văn phòng, phần mềm kế toán/MISA, AutoCAD.
 - So sánh **trong cùng ngành** (CI95 bootstrap), kỹ năng gắn với lương cao hơn nhất: SQL +7,2 triệu (5,8…9,0; n=224), Python +6,2 (4,1…10,3; n=103), JavaScript +5,5 (2,5…8,0; n=123). Canva thấp nhất −1,9 (−2,2…−1,4).
 - 13 kỹ năng có CI95 hoàn toàn dương, gồm cả Phân tích dữ liệu, Quản lý dự án, AutoCAD, Revit, PLC.
 - "AI" đứng cạnh Photoshop/InDesign… được hiểu là Adobe Illustrator, không phải trí tuệ nhân tạo.
 
-### Q6 — Dự đoán lương (Thành viên 3)
+### Q6 — Dự đoán lương (Hiếu)
 | Mô hình | MAE (triệu) | RMSE | R² |
 |---|---|---|---|
 | Baseline (trung vị) | 5,76 | 11,57 | −0,04 |
